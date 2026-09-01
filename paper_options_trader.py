@@ -160,7 +160,7 @@ def run_paper_options_simulation(
                 unit_val, total_leg_sum = price_strategy_legs(legs, current_price, days_to_exp=initial_expiry_days, r=0.06, sigma=0.20)
                 
                 cost_mag = max(abs(unit_val), 10.0)
-                budget = capital * RISK_BUDGET_PCT
+                budget = capital * 0.05  # 5% prudent risk budget per trade
                 units = budget / cost_mag
                 
                 entry_friction = total_leg_sum * units * COST_PCT * len(legs)
@@ -242,5 +242,12 @@ def run_paper_options_simulation(
     }
 
 if __name__ == "__main__":
-    res = run_paper_options_simulation(tickers=["NIFTY.NS"], days=30, initial_capital=1000000.0, mock=True)
-    print("Simulation Results:", res)
+    res = run_paper_options_simulation(tickers=["^NSEI"], days=90, initial_capital=1000000.0, mock=False)
+    print("\n=== MULTI-AGENT NSE OPTIONS PAPER TRADING PERFORMANCE ===")
+    print(f"Initial Capital    : INR 1,000,000.00")
+    print(f"Final Portfolio Val: INR {res['final_value']:,.2f}")
+    print(f"Total Strategy Ret : {res['total_return'] * 100:.2f}%")
+    print(f"Sharpe Ratio       : {res['sharpe']:.4f}")
+    print(f"Max Drawdown       : {res['max_drawdown'] * 100:.2f}%")
+    print(f"Total Trade Events : {res['trade_count']}")
+    print(f"Log files written  : paper_options_log.csv, paper_options_valuation.csv")
